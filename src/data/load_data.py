@@ -65,3 +65,31 @@ class Data:
         """
 
         return pd.read_sql_table(table_name=self._tablename, con=self._engine)
+
+
+class GenerationCapacity(Data):
+    def __init__(self, dataset: str = "generation_capacity") -> None:
+        super().__init__(dataset=dataset)
+
+    def load_cleaned(self) -> pd.DataFrame:
+        """
+        Loads the Generation Capacity data in it's cleaned form.
+
+        Returns:
+            pd.DataFrame: Cleaned generation capacity data.
+        """
+
+        df = (
+            (self.load_table())
+            .assign(
+                technology=lambda x: pd.Categorical(x["technology"]),
+                source=lambda x: pd.Categorical(x["source"]),
+                source_type=lambda x: pd.Categorical(x["source_type"]),
+                country=lambda x: pd.Categorical(x["country"]),
+                capacity_definition=lambda x: pd.Categorical(x["capacity_definition"]),
+            )
+            .drop(columns=["weblink", "type", "comment"])
+            .dropna()
+        )
+
+        return df
