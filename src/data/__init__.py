@@ -1,5 +1,6 @@
 """
-Module containing submodules and/or scripts covering downloading, generation, processing or cleaning of data.
+Module containing submodules and/or scripts covering downloading,
+generation, processing or cleaning of data.
 
 Author
 ------

@@ -10,7 +10,7 @@ dependencies:
   - flake8
   - isort
   - mypy
-  - pytest
+  - rich
   - requests
   - numpy
   - pandas
@@ -21,3 +21,4 @@ dependencies:
   - altair_saver
   - ipykernel
   - jupyterlab
+  - sqlalchemy
