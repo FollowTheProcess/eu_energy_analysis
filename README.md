@@ -67,8 +67,6 @@ pip install -e .
     │   │                     predictions
     │   │
     │   └── visualisation  <- Scripts to create exploratory and results oriented visualizations
-    │
-    └── tests              <- Unit tests for src
 
 <p><small>Project structure adapted from the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
 
