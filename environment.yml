@@ -22,3 +22,4 @@ dependencies:
   - ipykernel
   - jupyterlab
   - sqlalchemy
+  - pandas-profiling
