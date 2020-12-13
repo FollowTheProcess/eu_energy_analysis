@@ -1,0 +1,23 @@
+name: eu_energy_analysis
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  # Some common data packages in here by default
+  - python=3
+  - invoke
+  - black
+  - flake8
+  - isort
+  - mypy
+  - pytest
+  - requests
+  - numpy
+  - pandas
+  - matplotlib
+  - seaborn
+  - altair
+  - altair_data_server
+  - altair_saver
+  - ipykernel
+  - jupyterlab
