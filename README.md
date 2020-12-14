@@ -30,6 +30,15 @@ Install the project in editable mode (Note the . telling pip to install from the
 pip install -e .
 ```
 
+Download the data:
+
+``` bash
+# From project root directory
+python3 src/data/fetch_data.py
+```
+
+Now you're good to go!
+
 **Warning:** Only install this project inside a virtual environment. Pip cannot fully uninstall -e installed projects.
 
 ## Project Organisation
