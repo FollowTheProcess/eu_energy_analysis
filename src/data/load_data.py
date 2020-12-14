@@ -93,3 +93,20 @@ class GenerationCapacity(Data):
         )
 
         return df
+
+    def load_top5(self) -> pd.DataFrame:
+        """
+        Loads the Generation Capacity for the top 5 highest capacity
+        countries.
+
+        Returns:
+            pd.DataFrame: Top 5 countries generation capacity data.
+        """
+
+        df = self.load_cleaned()
+
+        top5_countries = ["FR", "DE", "IT", "ES", "GB"]
+
+        df = df[df["country"].isin(top5_countries)]
+
+        return df
