@@ -86,9 +86,13 @@ class GenerationCapacity(Data):
                 source=lambda x: pd.Categorical(x["source"]),
                 source_type=lambda x: pd.Categorical(x["source_type"]),
                 country=lambda x: pd.Categorical(x["country"]),
-                capacity_definition=lambda x: pd.Categorical(x["capacity_definition"]),
             )
-            .drop(columns=["weblink", "type", "comment"])
+            .drop(columns=["ID", "weblink", "type", "comment", "capacity_definition"])
+            .drop_duplicates(
+                subset=["technology", "year", "country"],
+                keep="last",
+                ignore_index=True,
+            )
             .dropna()
         )
 
