@@ -39,9 +39,10 @@ class Data:
                 Got {self.dataset}"""
             )
 
+        self._engine = create_engine(f"sqlite:///{str(self._fp)}")
+
         # So SQLAlchemy knows all the schema and metadata for our tables
         # Not essential but tends to come in handy
-        self._engine = create_engine(f"sqlite:///{str(self._fp)}")
         self._meta = MetaData(bind=self._engine)
         self._meta.reflect()
         self._table = self._meta.tables[self._tablename]
@@ -68,35 +69,85 @@ class Data:
 
 
 class GenerationCapacity(Data):
-    def __init__(self, dataset: str = "generation_capacity") -> None:
-        super().__init__(dataset=dataset)
+    def __init__(self) -> None:
+        super().__init__(dataset="generation_capacity")
 
-    def load_cleaned(self) -> pd.DataFrame:
+    def load_cleaned(self, level: str = None) -> pd.DataFrame:
         """
-        Loads the Generation Capacity data in it's cleaned form.
+        Loads the cleaned Generation Capacity dataset into a pandas dataframe.
+
+        User can specify the energy_source_level using the 'level' argument.
+
+        If no level is passed, the entire dataset will be loaded.
+
+        If level is passed, the energy source level columns will be dropped on load
+        as they are no longer needed.
+
+        Args:
+            level (str, optional): Level to load, one of ['total', 'type', 'fuel'].
+                'total' refers to energy_source_level_0
+                'type' is energy_source_level_1
+                'fuel' is energy_source_level_2
+                If None: loads entire dataset
+                Defaults to None.
+
+        Raises:
+            ValueError: If passed level not in ['total', 'type', 'fuel']
 
         Returns:
-            pd.DataFrame: Cleaned generation capacity data.
+            pd.DataFrame: Dataframe containing requested data.
         """
+
+        levels = {
+            "total": "energy_source_level_0",
+            "type": "energy_source_level_1",
+            "fuel": "energy_source_level_2",
+        }
 
         df = (
             (self.load_table())
             .assign(
                 technology=lambda x: pd.Categorical(x["technology"]),
-                source=lambda x: pd.Categorical(x["source"]),
-                source_type=lambda x: pd.Categorical(x["source_type"]),
                 country=lambda x: pd.Categorical(x["country"]),
+                year=lambda x: pd.to_datetime(x["year"], format=r"%Y"),
             )
-            .drop(columns=["ID", "weblink", "type", "comment", "capacity_definition"])
+            .drop(
+                columns=[
+                    "ID",
+                    "weblink",
+                    "type",
+                    "comment",
+                    "capacity_definition",
+                    "source",
+                    "source_type",
+                ]
+            )
             .drop_duplicates(
                 subset=["technology", "year", "country"],
-                keep="last",
+                keep="first",
                 ignore_index=True,
             )
+            .replace(to_replace="Other or unspecified energy sources", value="Other")
+            .replace(to_replace="Renewable energy sources", value="Renewables")
             .dropna()
         )
 
-        return df
+        if level is not None and level not in levels.keys():
+            raise ValueError(
+                f"Passed level must be one of ['total', 'type', 'fuel']. Got {level}"
+            )
+        elif level is None:
+            return df
+        else:
+            return df[df[levels.get(level)] == 1].drop(
+                columns=[
+                    "energy_source_level_0",
+                    "energy_source_level_1",
+                    "energy_source_level_2",
+                    "energy_source_level_3",
+                    "technology_level",
+                ]
+            )
 
     def load_top5(self) -> pd.DataFrame:
         """
@@ -114,3 +165,22 @@ class GenerationCapacity(Data):
         df = df[df["country"].isin(top5_countries)]
 
         return df
+
+    def load_uk(self) -> pd.DataFrame:
+        """
+        Loads the UK generation capacity data.
+
+        Returns:
+            pd.DataFrame: UK Data.
+        """
+
+        df = self.load_cleaned()
+
+        df = df[df["country"] == "UK"]
+
+        return df
+
+
+class TimeSeries(Data):
+    def __init__(self, dataset: str = "time_series") -> None:
+        super().__init__(dataset=dataset)
