@@ -8,7 +8,7 @@ Tom Fleet, Dec 2020
 
 If you want to install this project to run the code or experiment with it. Follow the below steps precisely.
 
-*You will need the [conda package manager](https://www.anaconda.com/products/individual) to recreate the environment*
+*You will need the [conda package manager](https://docs.conda.io/en/latest/miniconda.html) to recreate the environment*
 
 Clone the repo into your desired local directory
 
@@ -22,6 +22,10 @@ Create the project environment from the environment.yml:
 
 ``` bash
 conda env create --file environment.yml
+
+# Wait for it to be created
+
+conda activate eu_energy_analysis
 ```
 
 Install the project in editable mode (Note the . telling pip to install from the current directory):
