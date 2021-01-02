@@ -109,7 +109,6 @@ class GenerationCapacity(Data):
             .assign(
                 technology=lambda x: pd.Categorical(x["technology"]),
                 country=lambda x: pd.Categorical(x["country"]),
-                year=lambda x: pd.to_datetime(x["year"], format=r"%Y"),
             )
             .drop(
                 columns=[
